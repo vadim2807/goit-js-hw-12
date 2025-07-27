@@ -129,6 +129,10 @@ ul {
   margin: auto;
 }
 
+.pix {
+  height: 30px;
+}
+
 .form {
   margin: 10px auto;
 }
