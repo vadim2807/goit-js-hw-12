@@ -11,7 +11,7 @@ let page = 0;
 let query = '';
 
 // Обработка формы
-form.addEventListener('submit', (event) => {
+form.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     query = input.value.trim();
@@ -25,9 +25,9 @@ form.addEventListener('submit', (event) => {
     hideLoadMoreButton();
     clearGallery();
     showLoader();
-
-    getImagesByQuery(query, page, perPage)
-        .then(data => {
+try {
+    const data = await getImagesByQuery(query, page, perPage);
+        
             hideLoader();
             input.value = ""; // Очищаем поле после успешного запроса
             if (Math.ceil(data.totalHits / perPage) > page) { //Если страница одна - обязательно
@@ -38,20 +38,20 @@ form.addEventListener('submit', (event) => {
             } else {
                 createGallery(data.hits);
             }
-        })
-        .catch(() => {
+        }catch(error){
             hideLoader();
             showIziError('Щось пішло не так... Ми вже працюємо над цією проблемою.');
-        });
+        };
 });
 
 //обработка кнопки ДАЛЕЕ
-loadMore.addEventListener("click", () => {
+loadMore.addEventListener("click", async () => {
     hideLoadMoreButton();
     showLoader();
     page++;
-    getImagesByQuery(query, page, perPage)
-        .then(data => {
+    try {
+    const data = await getImagesByQuery(query, page, perPage);
+        
             hideLoader();
             createGallery(data.hits);
             scroll();
@@ -61,11 +61,10 @@ loadMore.addEventListener("click", () => {
                 showIziEnd("We're sorry, but you've reached the end of search results.")
             }
             
-        })
-        .catch(() => {
+        }catch(error) {
             hideLoader();
             showIziError('Щось пішло не так... Ми вже працюємо над цією проблемою.');
-        })
+        }
    
 })
 
